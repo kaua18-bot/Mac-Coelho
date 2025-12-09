@@ -1,0 +1,13 @@
+{
+  "customer": {
+    "name": "Cliente Teste",
+    "phone": "5511999999999",
+    "address": "Rua Exemplo, 123",
+    "payment": "Dinheiro",
+    "notes": "Sem cebola"
+  },
+  "cart": [
+    { "name": "Coelho Supreme", "size": "G", "unitPrice": 32.9, "quantity": 1, "extras": [], "notes": "" }
+  ],
+  "total": 32.9
+}
