@@ -1,5 +1,11 @@
-// Exemplo de função serverless para envio de pedido (Netlify Function)
-// Ajuste as variáveis de ambiente no painel do Netlify antes do deploy.
+/*
+  parts/03-netlify/sendOrder.js
+  - Exemplo de função serverless (Netlify Function) para envio de pedidos por e-mail usando nodemailer.
+  - Variáveis de ambiente necessárias no Netlify (Settings > Build & deploy > Environment):
+      SMTP_HOST, SMTP_PORT, SMTP_SECURE ("true"|"false"), SMTP_USER, SMTP_PASS, SMTP_FROM, STORE_EMAIL
+  - Teste localmente com o Netlify CLI: `netlify dev` (configure um .env ou use o UI do Netlify para variáveis locais).
+  - Observação: este arquivo é uma cópia em `parts/`. Para deploy automático coloque a função em `netlify/functions/sendOrder.js`.
+*/
 
 const nodemailer = require('nodemailer');
 

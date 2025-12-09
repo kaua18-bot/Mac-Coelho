@@ -1,4 +1,11 @@
-// Copia do assets/script.js — edite esta versão separadamente se precisar
+/*
+  parts/02-assets/script.js
+  - Cópia editável do `assets/script.js` para experimentar alterações de JS e dados do cardápio.
+  - Boas práticas:
+    * Edite aqui para testar mudanças rapidamente no layout de `parts/01-layout/index.html`.
+    * Mantenha em sincronia com `assets/script.js` quando for mesclar para o site principal.
+    * Para testar localmente, abra `parts/01-layout/index.html` no navegador.
+*/
 
 // Dados do cardápio — você pode editar ou carregar do backend
 const MENU = [

@@ -1,4 +1,8 @@
 :root{
+    /* parts/02-assets/styles.css
+       - Cópia editável do `assets/styles.css` para testar variações visuais sem impactar a versão principal.
+       - Edite aqui para prototipar cores, espaçamentos ou temas; copie as mudanças para `assets/styles.css` quando prontas.
+    */
     --bg:#f7f7f7;
     --card:#ffffff;
     --text:#222;
