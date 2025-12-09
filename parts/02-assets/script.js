@@ -20,6 +20,7 @@ const MENU = [
 const SIZES = [ { id: 's', name: 'P', mult: 1 }, { id: 'm', name: 'M', mult: 1.25 }, { id: 'l', name: 'G', mult: 1.5 } ];
 const EXTRAS = [ { id: 'extra_bacon', name: 'Bacon', price: 4.00 }, { id: 'extra_cheddar', name: 'Cheddar', price: 3.00 }, { id: 'extra_molho', name: 'Molho Especial', price: 1.50 } ];
 
+// formata número para Real brasileiro. Use quando mostrar preços na UI.
 function formatBRL(v){ return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
 
 /* --------------------------------------------------------------------------
@@ -56,18 +57,54 @@ function formatBRL(v){ return v.toLocaleString('pt-BR',{style:'currency',currenc
    Modifique comentários ou adicione logs temporários (console.log) ao testar.
 ----------------------------------------------------------------------------*/
 
+// Chave do localStorage onde o carrinho é armazenado (pode trocar se quiser versão diferente)
 const CART_KEY = 'maccoelho_cart_v2';
-function getCart(){ try{ return JSON.parse(localStorage.getItem(CART_KEY))||[] }catch(e){return[]} }
-function saveCart(c){ localStorage.setItem(CART_KEY,JSON.stringify(c)) }
+
+// Recupera o carrinho do localStorage. Retorna array vazio se não existir ou em caso de erro.
+function getCart(){
+  try{
+    const raw = localStorage.getItem(CART_KEY);
+    if(!raw) return [];
+    return JSON.parse(raw) || [];
+  } catch(e){
+    // Em caso de erro de parse, retornamos carrinho vazio (mais seguro que quebrar a aplicação)
+    console.warn('getCart parse error', e);
+    return [];
+  }
+}
+
+// Persiste o carrinho no localStorage. Recebe um array serializável.
+function saveCart(c){
+  try{ localStorage.setItem(CART_KEY, JSON.stringify(c)); }
+  catch(e){ console.warn('saveCart error', e); }
+}
 
 // Render + interatividade (simplificada) — copie o restante do script real se necessário
 function renderMenu(){
-  const grid = document.getElementById('menuGrid'); if(!grid) return;
+  // Localiza o container do menu. Se não existir (arquivo aberto isoladamente), aborta.
+  const grid = document.getElementById('menuGrid');
+  if(!grid) return;
+
+  // Limpa conteúdo anterior para renderização idempotente.
   grid.innerHTML = '';
+
+  // Para cada item do MENU criamos um card visual.
   MENU.forEach(item=>{
-    const card = document.createElement('div'); card.className='menu-card';
+    // Cria o elemento wrapper do card e aplica classe para estilo.
+    const card = document.createElement('div');
+    card.className = 'menu-card';
+
+    // Monta o HTML interno do card. Inclui imagem, nome, descrição, preço e botão.
+    // Observação: usar template literals facilita inserir valores dinâmicos.
     card.innerHTML = `\n      <img src="${item.img}" alt="${item.name}">\n      <div class="info">\n        <h3>${item.name}</h3>\n        <p>${item.desc}</p>\n        <div class="row">\n          <div class="price">${formatBRL(item.price)}</div>\n          <button class="add-btn" data-id="${item.id}">Adicionar</button>\n        </div>\n      </div>`;
+
+    // Anexe o card ao grid.
     grid.appendChild(card);
+
+    // Nota: Nesta versão de parts/ o handler para '.add-btn' não é ligado aqui.
+    // Se desejar comportamento imediato, adicione:
+    // card.querySelector('.add-btn').addEventListener('click', () => showProductModal(item.id));
+    // Eu evitei adicionar para manter esta cópia simples — adicione quando estiver testando.
   });
 }
 
