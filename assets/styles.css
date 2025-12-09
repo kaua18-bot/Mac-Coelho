@@ -1,11 +1,16 @@
 :root{
-    --bg:#f7f7f7;
-    --card:#ffffff;
-    --text:#222;
-    --accent:#d32f2f;
-    --muted:#666;
-    --header:#111;
-    --glass: rgba(255,255,255,0.6);
+        /*
+            Nota: sincronizado com `parts/02-assets/styles.css` (cópia para prototipagem).
+            - Edite `parts/02-assets/styles.css` para testar variações visuais rapidamente.
+            - Ao promover mudanças para produção, copie as regras relevantes para este arquivo.
+        */
+        --bg:#f7f7f7;
+        --card:#ffffff;
+        --text:#222;
+        --accent:#d32f2f;
+        --muted:#666;
+        --header:#111;
+        --glass: rgba(255,255,255,0.6);
 }
 :root.dark{
     --bg:#0b0b0b;

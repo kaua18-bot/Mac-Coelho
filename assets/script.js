@@ -1,3 +1,12 @@
+/*
+  Nota: sincronizado com as notas em `parts/02-assets/script.js`.
+  - Este arquivo contém a lógica ativa do site (render, modal, carrinho, checkout).
+  - Boas práticas ao editar:
+    * Faça mudanças pequenas e teste localmente abrindo `index.html`.
+    * Para prototipar, edite em `parts/02-assets/script.js` e depois copie mudanças seguras para cá.
+    * Não comite credenciais ou dados sensíveis.
+*/
+
 // Dados do cardápio — você pode editar ou carregar do backend
 const MENU = [
   { id: 'b1', name: 'Coelho Supreme', desc: 'Pão brioche, carne artesanal 180g, cheddar duplo, bacon crocante e molho especial.', price: 32.90, img: 'https://i.imgur.com/VF8x0Zm.jpg' },
