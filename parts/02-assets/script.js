@@ -22,6 +22,40 @@ const EXTRAS = [ { id: 'extra_bacon', name: 'Bacon', price: 4.00 }, { id: 'extra
 
 function formatBRL(v){ return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
 
+/* --------------------------------------------------------------------------
+   Guia rápido das principais funções (edite conforme necessário):
+
+   - renderMenu()
+     Renderiza os cards do menu dentro de `#menuGrid` usando a constante MENU.
+     Ideal para alterar itens, nomes, descrições e imagens.
+
+   - showProductModal(productId)
+     Abre um modal de customização para o produto (tamanhos, adicionais, quantidade,
+     observações). Cria o modal dinamicamente se não existir.
+
+   - addToCartItem(item)
+     Adiciona um item (com `unitPrice`, `quantity`, `extras`, `notes`) ao localStorage
+     e atualiza a UI do carrinho. Use este ponto para instrumentar validações ou
+     persistência remota se quiser.
+
+   - updateCartUI()
+     Recalcula total, atualiza contador e renderiza os itens no modal do carrinho.
+     Aqui é possível inserir lógica de descontos, taxas ou cálculo de frete.
+
+   - renderCheckoutSummary()
+     Popula o resumo do checkout com os itens atuais do carrinho (R$ formato BR).
+
+   - buildOrderMessage(customer)
+     Monta a string de mensagem que será enviada por WhatsApp; personalize o
+     layout do texto (por ex., incluir id do pedido) se necessário.
+
+   - sendOrderToServer(customer)
+     Envia via POST para `/.netlify/functions/sendOrder` — a função serverless
+     processa e encaminha por e-mail (ver `parts/03-netlify/sendOrder.js`).
+
+   Modifique comentários ou adicione logs temporários (console.log) ao testar.
+----------------------------------------------------------------------------*/
+
 const CART_KEY = 'maccoelho_cart_v2';
 function getCart(){ try{ return JSON.parse(localStorage.getItem(CART_KEY))||[] }catch(e){return[]} }
 function saveCart(c){ localStorage.setItem(CART_KEY,JSON.stringify(c)) }
