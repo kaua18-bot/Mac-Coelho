@@ -101,11 +101,14 @@
                     </label>
                     <label>Observações<textarea id="c_notes" rows="3"></textarea></label>
                     <div style="display:flex;gap:8px;margin-top:12px">
-                        <button type="button" id="sendWhatsApp" class="btn-primary">Enviar via WhatsApp</button>
+                        <button type="button" id="sendWhatsApp" class="btn-primary">Enviar via WhatsApp (+55 19 97108-0410)</button>
                         <button type="button" id="sendEmail" class="btn">Enviar por E-mail (automático)</button>
                     </div>
+                    <div class="shop-contact mt-8" style="margin-top:8px;color:var(--muted)">
+                      <strong>Número da loja (WhatsApp):</strong> +55 19 97108-0410
+                    </div>
                 </form>
-                <p class="mt-12" style="color:var(--muted)">O envio por WhatsApp abre o aplicativo do cliente. O envio automático por e-mail envia para a cozinha sem abrir apps (requer configuração SMTP no deploy).</p>
+                <p class="mt-12" style="color:var(--muted)">Observação: preencha seu telefone; a mensagem via WhatsApp será enviada para o número da loja acima. O envio automático por e-mail envia o pedido diretamente para a cozinha (requer configuração SMTP no deploy).</p>
             </div>
         </div>
     </section>
@@ -137,73 +140,3 @@
     <script src="assets/script.js" defer></script>
   </body>
   </html>
-<section id="cardapio" class="section container">
-    <h2 class="section-title">Nosso Cardápio</h2>
-    <p class="section-sub">Ingredientes selecionados e receitas artesanais. Clique em "Adicionar" para montar seu pedido.</p>
-    <div id="menuGrid" class="menu-grid" aria-live="polite"></div>
-</section>
-
-<section id="delivery" class="section container">
-    <h2 class="section-title">Delivery</h2>
-    <p class="section-sub">Fazemos entregas na região — estimativa de 30-50 minutos. Preencha seu endereço para simular o frete.</p>
-    <form id="deliveryForm" class="form-inline">
-        <input type="text" id="address" placeholder="Seu endereço" required>
-        <button class="btn" type="submit">Simular</button>
-    </form>
-    <div id="deliveryResult" class="mt-12"></div>
-</section>
-
-<section id="sobre" class="section container">
-    <h2 class="section-title">Sobre Nós</h2>
-    <p>Mac Coelho nasceu da paixão por hambúrgueres bem feitos. Usamos ingredientes locais e receitas testadas para entregar sempre o melhor.</p>
-</section>
-
-    <section id="contato" class="section container">
-    <h2 class="section-title">Contato & Localização</h2>
-    <div class="grid-2">
-        <div>
-            <p><strong>Endereço:</strong> Rua William Neumann, 355 — perto ao São Vicente</p>
-            <p><strong>Telefone:</strong> (19) 97108-0410</p>
-            <form name="contact" id="contactForm" data-netlify="true">
-                <label>Nome<input type="text" name="name" required></label>
-                <label>E-mail<input type="email" name="email" required></label>
-                <label>Mensagem<textarea name="message" rows="4" required></textarea></label>
-                <button class="btn-primary" type="submit">Enviar</button>
-            </form>
-        </div>
-        <div>
-            <div id="map" style="height:280px; border-radius:8px; overflow:hidden"></div>
-        </div>
-    </div>
-</section>
-
-    <section id="checkout" class="section container">
-        <h2 class="section-title">Finalizar Pedido</h2>
-        <p class="section-sub">Revise seu pedido e escolha a forma de envio.</p>
-        <div class="grid-2">
-            <div>
-                <h3>Resumo do Pedido</h3>
-                <div id="checkoutSummary" style="background:var(--card);padding:12px;border-radius:8px"></div>
-            </div>
-            <div>
-                <form id="checkoutForm">
-                    <label>Nome<input type="text" id="c_name" required></label>
-                    <label>Telefone<input type="text" id="c_phone" placeholder="(19) 9xxxx-xxxx" required></label>
-                    <label>Endereço (ou escreva "Retirar")<input type="text" id="c_address" required></label>
-                    <label>Forma de pagamento
-                        <select id="c_payment">
-                            <option value="PIX">PIX</option>
-                            <option value="Cartão">Cartão</option>
-                            <option value="Dinheiro">Dinheiro</option>
-                        </select>
-                    </label>
-                    <label>Observações<textarea id="c_notes" rows="3"></textarea></label>
-                    <div style="display:flex;gap:8px;margin-top:12px">
-                        <button type="button" id="sendWhatsApp" class="btn-primary">Enviar via WhatsApp</button>
-                        <button type="button" id="sendEmail" class="btn">Enviar por E-mail</button>
-                    </div>
-                </form>
-                <p class="mt-12" style="color:var(--muted)">O envio por WhatsApp abre o aplicativo do cliente. O envio por e-mail abre o cliente de e-mail do usuário. Para envio automático (sem abrir o app), solicite integração de backend/serverless.</p>
-            </div>
-        </div>
-    </section>
