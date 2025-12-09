@@ -1,10 +1,10 @@
 /*
-  Nota: sincronizado com as notas em `parts/02-assets/script.js`.
-  - Este arquivo contém a lógica ativa do site (render, modal, carrinho, checkout).
-  - Boas práticas ao editar:
-    * Faça mudanças pequenas e teste localmente abrindo `index.html`.
-    * Para prototipar, edite em `parts/02-assets/script.js` e depois copie mudanças seguras para cá.
-    * Não comite credenciais ou dados sensíveis.
+  Documentação inline (ativo):
+  - Este arquivo é a versão ativa usada pelo site (`assets/script.js`).
+  - Incluí comentários orientativos em cada função principal para facilitar
+    manutenção e onboarding rápido. Não altere a lógica ao adicionar comentários.
+  - Para prototipar mudanças grandes, prefira editar em `parts/02-assets/script.js`
+    e, quando pronto, copie as alterações para cá.
 */
 
 // Dados do cardápio — você pode editar ou carregar do backend
@@ -28,21 +28,45 @@ const EXTRAS = [
   { id: 'extra_molho', name: 'Molho Especial', price: 1.50 }
 ];
 
+// formata um número para o formato de moeda brasileiro (R$). Use sempre ao exibir preços.
 function formatBRL(v){
   return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 }
 
 // CART: array de itens com opções
+// Chave do localStorage usada para persistir o carrinho no navegador.
 const CART_KEY = 'maccoelho_cart_v2';
-function getCart(){ try{ return JSON.parse(localStorage.getItem(CART_KEY))||[] }catch(e){return[]} }
-function saveCart(c){ localStorage.setItem(CART_KEY,JSON.stringify(c)) }
 
-// renderiza o cardápio com botão que abre modal de customização
+// Recupera o carrinho do localStorage. Sempre retorna um array (vazio se não existir).
+function getCart(){
+  try{
+    const raw = localStorage.getItem(CART_KEY);
+    if(!raw) return [];
+    return JSON.parse(raw) || [];
+  }catch(e){
+    // Em caso de erro (dados corrompidos), retorna carrinho vazio para não quebrar a UI.
+    console.warn('getCart parse error', e);
+    return [];
+  }
+}
+
+// Persiste o carrinho no localStorage. Envolvido em try/catch para falhas de storage.
+function saveCart(c){
+  try{ localStorage.setItem(CART_KEY, JSON.stringify(c)); }
+  catch(e){ console.warn('saveCart error', e); }
+}
+
+// Renderiza o cardápio na página dentro do container `#menuGrid`.
+// - Mantém renderização idempotente: limpa o container antes de inserir os cards.
+// - Cada card recebe um botão com data-id que abre o modal de customização.
 function renderMenu(){
   const grid = document.getElementById('menuGrid');
+  if(!grid) return; // em páginas de teste sem container, evita erro
   grid.innerHTML = '';
+
   MENU.forEach(item=>{
-    const card = document.createElement('div'); card.className='menu-card';
+    const card = document.createElement('div');
+    card.className='menu-card';
     card.innerHTML = `
       <img src="${item.img}" alt="${item.name}">
       <div class="info">
@@ -55,12 +79,16 @@ function renderMenu(){
       </div>`;
     grid.appendChild(card);
   });
+  // Liga handlers após criação dos elementos.
   document.querySelectorAll('.add-btn').forEach(b=>b.addEventListener('click',e=>{
     const id = e.currentTarget.dataset.id; showProductModal(id);
   }));
 }
 
-// Modal de produto (cria dinamicamente se não existir)
+// showProductModal(productId)
+// - Cria (se necessário) e exibe um modal para customizar o produto selecionado.
+// - Ponto de extensão: aqui você pode adicionar validações, opções de sibstituição
+//   de ingredientes, e calcular promoções específicas por produto.
 function showProductModal(productId){
   const product = MENU.find(p=>p.id===productId); if(!product) return;
   let modal = document.getElementById('productModal');
@@ -102,7 +130,7 @@ function showProductModal(productId){
     modal.querySelector('.product-backdrop').addEventListener('click',()=>modal.setAttribute('aria-hidden','true'));
     modal.querySelector('#closeProductModal').addEventListener('click',()=>modal.setAttribute('aria-hidden','true'));
   }
-  // preencher
+  // preencher campos do modal com os dados do produto
   modal.querySelector('#pm_title').textContent = product.name;
   modal.querySelector('#pm_img').src = product.img;
   modal.querySelector('#pm_desc').textContent = product.desc;
@@ -127,6 +155,8 @@ function showProductModal(productId){
   modal.querySelector('#pm_qty').value = 1; modal.querySelector('#pm_notes').value='';
   modal.setAttribute('aria-hidden','false');
 
+  // Handler do botão 'Adicionar ao carrinho' dentro do modal.
+  // Constrói o objeto cartItem com price calculado (tamanho + adicionais) e quantidade.
   modal.querySelector('#pm_add').onclick = ()=>{
     const selectedSizeBtn = modal.querySelector('#pm_sizes .active');
     const sizeId = selectedSizeBtn ? selectedSizeBtn.dataset.size : 's';
@@ -135,7 +165,7 @@ function showProductModal(productId){
     const notes = modal.querySelector('#pm_notes').value||'';
     const extras = [];
     modal.querySelectorAll('#pm_extras input[type=checkbox]').forEach(ch=>{ if(ch.checked) extras.push({id: ch.dataset.id, price: parseFloat(ch.dataset.price), name: ch.parentNode.textContent.trim()}) });
-    // calcular preço
+    // calcular preço unitário: preço base * multiplicador do tamanho + soma dos extras
     const extrasTotal = extras.reduce((s,e)=>s+e.price,0);
     const unitPrice = +(product.price * size.mult + extrasTotal).toFixed(2);
     const cartItem = {
@@ -150,12 +180,14 @@ function showProductModal(productId){
       unitPrice,
       quantity: qty
     };
+    // Adiciona ao carrinho (persistência e UI são tratadas em addToCartItem)
     addToCartItem(cartItem);
     modal.setAttribute('aria-hidden','true');
   };
 }
 
 function addToCartItem(item){
+  // Adiciona o item ao carrinho, persiste e atualiza a interface.
   const cart = getCart();
   cart.push(item);
   saveCart(cart); updateCartUI();
@@ -163,6 +195,7 @@ function addToCartItem(item){
 }
 
 function updateCartUI(){
+  // Atualiza contador no cabeçalho, renderiza itens no modal e recalcula total.
   const cart = getCart();
   const count = cart.reduce((s,i)=>s+i.quantity,0);
   document.getElementById('cartCount').textContent = count;
@@ -188,6 +221,7 @@ function updateCartUI(){
     </div>`;
     itemsEl.appendChild(row);
   });
+  // Exibe total formatado
   document.getElementById('cartTotal').textContent = formatBRL(total);
   // handlers
   itemsEl.querySelectorAll('button').forEach(b=>{
@@ -201,7 +235,7 @@ function updateCartUI(){
       saveCart(cart); updateCartUI();
     });
   });
-  // atualizar checkout summary
+  // Atualiza o resumo do checkout após qualquer alteração no carrinho.
   renderCheckoutSummary();
 }
 
@@ -242,18 +276,21 @@ function renderCheckoutSummary(){
   const summary = document.getElementById('checkoutSummary'); if(!summary) return;
   const cart = getCart(); if(cart.length===0){ summary.innerHTML = '<em>Carrinho vazio</em>'; return }
   let html = '<ul style="padding-left:18px">'; let total=0;
-  cart.forEach(it=>{ html += `<li>${it.name} (${it.size}) x${it.quantity} — ${formatBRL(it.unitPrice*it.quantity)}${it.extras.length? '<div style="color:var(--muted);font-size:13px">Adicionais: '+it.extras.map(e=>e.name).join(', ')+'</div>':''}</li>`; total += it.unitPrice*it.quantity });
+  // Render de cada item do carrinho no checkout (inclui adicionais e observações)
+  cart.forEach(it=>{ html += `<li>${it.name} (${it.size}) x${it.quantity} — ${formatBRL(it.unitPrice*it.quantity)}${it.extras.length? '<div style="color:var(--muted);font-size:13px">Adicionais: '+it.extras.map(e=>e.name).join(', ')+'</div>':''}${it.notes? '<div style="color:var(--muted);font-size:13px">Obs: '+it.notes+'</div>':''}</li>`; total += it.unitPrice*it.quantity });
   html += `</ul><div style="margin-top:8px"><strong>Total: ${formatBRL(total)}</strong></div>`;
   summary.innerHTML = html;
 }
 
 // WhatsApp / Email sending
+// STORE_WHATSAPP: número em formato internacional (padrão para wa.me: country+area+number sem sinais)
 const STORE_WHATSAPP = '5519971080410'; // número da loja em formato internacional (sem símbolos)
 const STORE_EMAIL = 'maccoelho.delivery@gmail.com';
 
 function buildOrderMessage(customer){
+  // Monta uma string legível do pedido para enviar via WhatsApp (ou e-mail plain-text)
   const cart = getCart(); let total = 0; let itemsTxt = '';
-  cart.forEach(it=>{ itemsTxt += `- ${it.name} (${it.size}) x${it.quantity} (${formatBRL(it.unitPrice*it.quantity)})\n`; total += it.unitPrice*it.quantity; if(it.extras.length) itemsTxt += `  Adicionais: ${it.extras.map(e=>e.name).join(', ')}\n`; if(it.notes) itemsTxt += `  Obs: ${it.notes}\n`; });
+  cart.forEach(it=>{ itemsTxt += `- ${it.name} (${it.size}) x${it.quantity} (${formatBRL(it.unitPrice*it.quantity)} )\n`; total += it.unitPrice*it.quantity; if(it.extras.length) itemsTxt += `  Adicionais: ${it.extras.map(e=>e.name).join(', ')}\n`; if(it.notes) itemsTxt += `  Obs: ${it.notes}\n`; });
   const msg = `Pedido Novo - Mac Coelho\nNome: ${customer.name}\nTelefone: ${customer.phone}\nEndereço: ${customer.address}\nItens:\n${itemsTxt}Total: ${formatBRL(total)}\nPagamento: ${customer.payment}\nObservações: ${customer.notes || '-'}\n`;
   return msg;
 }
@@ -279,7 +316,9 @@ async function sendOrderToServer(customer){
       const text = await res.text(); alert('Falha ao enviar pedido: '+text);
     }
   }catch(err){
-    console.error(err); alert('Erro ao enviar pedido: '+err.message);
+    // Erros de rede ou da função serverless chegam aqui — logue e avise o usuário.
+    console.error('sendOrderToServer error', err);
+    alert('Erro ao enviar pedido: '+(err.message || err));
   }
 }
 
