@@ -1,0 +1,15 @@
+:root{
+    --bg:#f7f7f7;
+    --card:#ffffff;
+    --text:#222;
+    --accent:#d32f2f;
+    --muted:#666;
+}
+
+/* Versão de styles para edição em parts. Edite aqui se quiser testar variações visuais. */
+
+body{font-family:Roboto, sans-serif;background:var(--bg);color:var(--text);margin:0}
+.container{max-width:1100px;margin:0 auto;padding:0 16px}
+.header-row{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.menu-card{background:#fff;border-radius:12px;overflow:hidden}

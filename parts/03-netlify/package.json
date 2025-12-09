@@ -1,0 +1,11 @@
+{
+  "name": "mac-coelho-netlify-function",
+  "version": "1.0.0",
+  "description": "Netlify function dependencies (nodemailer) - parts copy",
+  "dependencies": {
+    "nodemailer": "^6.9.4"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
